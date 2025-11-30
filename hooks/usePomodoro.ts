@@ -34,7 +34,7 @@ export function usePomodoro() {
     sessionCount: 0,
     completedSessions: []
   })
-  
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const [currentMode, setCurrentMode] = useState<TimerMode>('work')
   const [isClient, setIsClient] = useState(false)
@@ -46,24 +46,59 @@ export function usePomodoro() {
     setIsClient(true)
   }, [])
 
-  // Load settings from localStorage
+  // Load settings and state from localStorage
   useEffect(() => {
     if (isClient && typeof window !== 'undefined') {
+      // Load Settings
       const savedSettings = localStorage.getItem('pomodoroSettings')
       if (savedSettings) {
         try {
           const parsed = JSON.parse(savedSettings)
           setSettings(parsed)
-          setTimerState(prev => ({
-            ...prev,
-            timeRemaining: parsed.workDuration * 60
-          }))
         } catch (error) {
           console.error('Failed to parse saved settings:', error)
         }
       }
+
+      // Load Timer State
+      const savedState = localStorage.getItem('pomodoroState')
+      if (savedState) {
+        try {
+          const parsedState = JSON.parse(savedState)
+          // Restore mode
+          if (parsedState.currentMode) {
+            setCurrentMode(parsedState.currentMode)
+          }
+          // Restore timer state
+          if (parsedState.timerState) {
+            setTimerState(prev => ({
+              ...prev,
+              ...parsedState.timerState,
+              isRunning: false, // Always start paused to prevent background timing issues
+              isPaused: parsedState.timerState.isRunning ? true : parsedState.timerState.isPaused // If it was running, set to paused
+            }))
+          }
+        } catch (error) {
+          console.error('Failed to parse saved state:', error)
+        }
+      }
     }
   }, [isClient])
+
+  // Save state to localStorage whenever relevant state changes
+  useEffect(() => {
+    if (isClient && typeof window !== 'undefined') {
+      const stateToSave = {
+        currentMode,
+        timerState: {
+          ...timerState,
+          isRunning: timerState.isRunning, // Save actual running state
+          isPaused: timerState.isPaused
+        }
+      }
+      localStorage.setItem('pomodoroState', JSON.stringify(stateToSave))
+    }
+  }, [timerState, currentMode, isClient])
 
   // Save settings to localStorage
   useEffect(() => {
@@ -119,8 +154,8 @@ export function usePomodoro() {
       return
     }
 
-    console.log('🎯 Timer session completing!', { 
-      currentMode, 
+    console.log('🎯 Timer session completing!', {
+      currentMode,
       sessionCount: timerState.sessionCount,
       timeRemaining: timerState.timeRemaining,
       isRunning: timerState.isRunning,
@@ -150,9 +185,9 @@ export function usePomodoro() {
     const nextMode = getNextMode()
     console.log('🔄 Switching to next mode:', nextMode)
     setCurrentMode(nextMode)
-    
+
     console.log('📝 Setting timer state with needsConfirmation: true')
-    
+
     // Combine all state updates into a single call
     setTimerState((prev: TimerState) => {
       console.log('📝 Setting timer state with needsConfirmation: true', {
@@ -189,12 +224,12 @@ export function usePomodoro() {
     if (settings.notifications) {
       const completedMode = completedSession.mode
       const title = completedMode === 'work' ? 'Work Session Complete!' : 'Break Time Over!'
-      const body = completedMode === 'work' 
-        ? 'Time for a break! You\'ve earned it.' 
+      const body = completedMode === 'work'
+        ? 'Time for a break! You\'ve earned it.'
         : 'Ready to get back to work?'
       showNotification(title, body)
     }
-    
+
     console.log('✅ completeSession function finished')
   }, [timerState.currentSession, timerState.currentTask, currentMode, settings, getNextMode, getDurationForMode, playSound])
 

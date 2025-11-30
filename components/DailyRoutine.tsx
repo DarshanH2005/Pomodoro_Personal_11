@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, X, Check, RotateCcw } from 'lucide-react'
 import PremiumButton from './PremiumButton'
 
+import { MagicCard } from '@/components/ui/magic-card'
+
 interface RoutineItem {
     id: string
     text: string
@@ -72,7 +74,7 @@ export default function DailyRoutine() {
     if (!mounted) return null
 
     return (
-        <div className="bg-card text-card-foreground rounded-[2rem] shadow-sm border border-border/50 p-6 mb-6">
+        <MagicCard className="bg-card text-card-foreground rounded-[2rem] shadow-sm border border-border/50 p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold flex items-center gap-2">
                     <span className="text-xl">☀️</span> Daily Routine
@@ -155,6 +157,6 @@ export default function DailyRoutine() {
                     ))}
                 </AnimatePresence>
             </div>
-        </div>
+        </MagicCard>
     )
 }

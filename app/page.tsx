@@ -18,6 +18,8 @@ import { Sun, Moon, Settings, Menu } from 'lucide-react'
 import GlassButton from '@/components/GlassButton'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import DailyRoutine from '@/components/DailyRoutine'
+import { ShineBorder } from '@/components/ui/shine-border'
+import { MagicCard } from '@/components/ui/magic-card'
 
 export default function Home() {
   const {
@@ -214,6 +216,7 @@ export default function Home() {
             transition={{ duration: 0.5 }}
           >
             <div className="bg-card text-card-foreground rounded-[2rem] shadow-sm border border-border/50 p-8 relative overflow-hidden">
+              <ShineBorder shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]} />
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-20"></div>
               <TimerDisplay
                 timeRemaining={timerState.timeRemaining}
@@ -264,7 +267,7 @@ export default function Home() {
           >
             <DailyRoutine />
 
-            <div className="bg-card text-card-foreground rounded-[2rem] shadow-sm border border-border/50 p-6 h-[600px] flex flex-col">
+            <MagicCard className="bg-card text-card-foreground rounded-[2rem] shadow-sm border border-border/50 p-6 h-[600px] flex flex-col">
               <Tabs defaultValue="tasks" className="h-full flex flex-col">
                 <TabsList className="w-full grid grid-cols-2 mb-6 bg-secondary/50 p-1 rounded-full">
                   <TabsTrigger value="tasks" className="rounded-full data-[state=active]:bg-background data-[state=active]:shadow-sm">Tasks</TabsTrigger>
@@ -301,7 +304,7 @@ export default function Home() {
                   <StatsDisplay mode={statsMode} stats={statsMode === 'daily' ? dailyStats : weeklyStats} />
                 </TabsContent>
               </Tabs>
-            </div>
+            </MagicCard>
           </motion.div>
         </div>
 

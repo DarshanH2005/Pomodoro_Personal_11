@@ -4,18 +4,18 @@
 
 @layer base {
   :root {
-    /* Material Design 3 - Light Theme (Google Inspired) */
-    --background: 0 0% 99%;
+    /* Material Design 3 - Dark Theme (Forced per request) */
+    --background: 0 0% 4%;
     /* Surface */
-    --foreground: 210 11% 15%;
+    --foreground: 0 0% 98%;
     /* On Surface */
 
-    --card: 0 0% 100%;
+    --card: 0 0% 9%;
     /* Surface Container Low */
-    --card-foreground: 210 11% 15%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 210 11% 15%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 98%;
 
     --primary: 212 100% 44%;
     /* Google Blue */
@@ -49,17 +49,17 @@
 
   .dark {
     /* Material Design 3 - Dark Theme */
-    --background: 210 11% 10%;
+    --background: 0 0% 4%;
     /* Surface */
-    --foreground: 210 40% 98%;
+    --foreground: 0 0% 98%;
     /* On Surface */
 
-    --card: 210 11% 13%;
+    --card: 0 0% 9%;
     /* Surface Container */
-    --card-foreground: 210 40% 98%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 210 11% 13%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 98%;
 
     --primary: 212 100% 70%;
     /* Lighter Blue for Dark Mode */
