@@ -4,48 +4,82 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Material Design 3 - Light Theme (Google Inspired) */
+    --background: 0 0% 99%;
+    /* Surface */
+    --foreground: 210 11% 15%;
+    /* On Surface */
+
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Surface Container Low */
+    --card-foreground: 210 11% 15%;
+
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
+    --popover-foreground: 210 11% 15%;
+
+    --primary: 212 100% 44%;
+    /* Google Blue */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96.1%;
+    /* Secondary Container */
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
+
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    --ring: 212 100% 44%;
+
+    --radius: 1.5rem;
+    /* M3 uses larger corner radii */
+
+    /* M3 Elevation Shadows */
+    --shadow-1: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+    --shadow-2: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+    --shadow-3: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px 0 rgba(0, 0, 0, 0.3);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    /* Material Design 3 - Dark Theme */
+    --background: 210 11% 10%;
+    /* Surface */
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
+    /* On Surface */
+
+    --card: 210 11% 13%;
+    /* Surface Container */
     --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
+
+    --popover: 210 11% 13%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
+
+    --primary: 212 100% 70%;
+    /* Lighter Blue for Dark Mode */
+    --primary-foreground: 212 100% 15%;
+
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
+
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
+
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
+
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
+    --ring: 212 100% 70%;
   }
 }
 
@@ -53,8 +87,9 @@
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
   }
 }
 
@@ -63,10 +98,12 @@
   0% {
     transform: scale(0.33);
   }
+
   40%,
   50% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
     transform: scale(1.33);
@@ -77,9 +114,11 @@
   0% {
     transform: scale(0.8);
   }
+
   50% {
     transform: scale(1);
   }
+
   100% {
     transform: scale(0.8);
   }
@@ -87,15 +126,18 @@
 
 .pulse-ring {
   animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  will-change: transform, opacity;
 }
 
 .pulse-dot {
   animation: pulse-dot 1.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
+  will-change: transform;
 }
 
 /* Timer circle animation */
 .timer-circle {
   transition: stroke-dashoffset 1s linear;
+  will-change: stroke-dashoffset;
 }
 
 /* Notification dialog animations */
@@ -103,6 +145,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -113,6 +156,7 @@
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -120,31 +164,45 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.05);
   }
 }
 
 @keyframes bounce {
-  0%, 20%, 53%, 80%, 100% {
+
+  0%,
+  20%,
+  53%,
+  80%,
+  100% {
     transform: translate3d(0, 0, 0);
   }
-  40%, 43% {
+
+  40%,
+  43% {
     transform: translate3d(0, -30px, 0);
   }
+
   70% {
     transform: translate3d(0, -15px, 0);
   }
+
   90% {
     transform: translate3d(0, -4px, 0);
   }
 }
 
 @keyframes ping {
-  75%, 100% {
+
+  75%,
+  100% {
     transform: scale(2);
     opacity: 0;
   }
@@ -152,14 +210,27 @@
 
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
+  will-change: opacity;
 }
 
 .animate-slideUp {
   animation: slideUp 0.4s ease-out;
+  will-change: transform, opacity;
 }
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  will-change: transform;
+}
+
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+  will-change: transform;
 }
 
 .notification-overlay {
@@ -172,6 +243,7 @@
 
 .notification-button {
   box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+  transition: transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 .notification-button:hover {
@@ -182,94 +254,20 @@
   transform: scale(0.95);
 }
 
-/* Notification popup animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+/* Glassmorphism Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-out;
-}
-
-.animate-slideUp {
-  animation: slideUp 0.4s ease-out;
-}
-
-/* Notification overlay and dialog styles */
-.notification-overlay {
-  backdrop-filter: blur(4px);
-}
-
-.notification-dialog {
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
-
-.notification-button {
-  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
-}
-
-.notification-button:hover {
-  box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.6);
-}
-
-/* Pulse animation for the notification icon */
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Ping animation for the notification icon */
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-ping {
-  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
-}
-
-/* Bounce animation for the notification title */
-@keyframes bounce {
-  0%, 20%, 53%, 80%, 100% {
-    transform: translate3d(0, 0, 0);
-  }
-  40%, 43% {
-    transform: translate3d(0, -30px, 0);
-  }
-  70% {
-    transform: translate3d(0, -15px, 0);
-  }
-  90% {
-    transform: translate3d(0, -4px, 0);
-  }
-}
-
-.animate-bounce {
-  animation: bounce 1s infinite;
+.text-glow {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }

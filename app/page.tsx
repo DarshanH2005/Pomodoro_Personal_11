@@ -14,6 +14,10 @@ import StatsDisplay from '@/components/StatsDisplay'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useTheme } from 'next-themes'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Sun, Moon, Settings, Menu } from 'lucide-react'
+import GlassButton from '@/components/GlassButton'
+import { ThemeToggle } from '@/components/ThemeToggle'
+import DailyRoutine from '@/components/DailyRoutine'
 
 export default function Home() {
   const {
@@ -29,7 +33,7 @@ export default function Home() {
     updateSettings,
     confirmNotification
   } = usePomodoro()
-  
+
   const {
     tasks,
     sessions,
@@ -42,15 +46,15 @@ export default function Home() {
     deleteTask,
     createSession
   } = useDatabase()
-  
+
   const { theme, setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  
+
   // Set mounted flag on component mount
   useEffect(() => {
     setMounted(true)
   }, [])
-  
+
   // Request notification permission on component mount
   useEffect(() => {
     if (mounted) {
@@ -119,262 +123,195 @@ export default function Home() {
   // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {
     return (
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="flex flex-col items-center justify-center mb-8">
-          <h1 className="text-4xl font-bold mb-2 text-blue-600">Pomodoro Timer</h1>
-          <p className="text-gray-600 text-center max-w-md">
-            Boost your productivity with the Pomodoro Technique
-          </p>
-        </div>
-        <div className="flex justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        </div>
+      <main className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </main>
     )
   }
 
   return (
-    <main className="container mx-auto px-4 py-8 max-w-full">
-      <motion.div 
-        className="flex flex-col items-center justify-center mb-8"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <h1 className="text-4xl font-bold mb-2 text-blue-600 dark:text-blue-400">Pomodoro Timer</h1>
-        <p className="text-gray-600 dark:text-gray-300 text-center max-w-md">
-          Boost your productivity with the Pomodoro Technique
-        </p>
-      </motion.div>
-
-      {/* Notification Confirmation Dialog - In-app popup */}
-      <AnimatePresence>
-        {timerState.needsConfirmation && (
-          <motion.div 
-            className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4 notification-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <motion.div 
-              className="bg-white dark:bg-black rounded-xl shadow-2xl max-w-md w-full p-8 text-center notification-dialog"
-              initial={{ scale: 0.8, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.8, y: 20 }}
-              transition={{ duration: 0.4, type: "spring", stiffness: 300 }}
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+      {/* Top App Bar */}
+      <header className="sticky top-0 z-40 w-full backdrop-blur-lg bg-background/80 border-b border-border/40">
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="bg-primary/10 p-2 rounded-xl">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h1 className="text-xl font-medium tracking-tight">Pomodoro</h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="p-3 rounded-full hover:bg-secondary transition-colors"
+              aria-label="Settings"
             >
-              <motion.div 
-                className="flex justify-center mb-6"
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              <Settings className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Notification Confirmation Dialog - In-app popup */}
+        <AnimatePresence>
+          {timerState.needsConfirmation && (
+            <motion.div
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <motion.div
+                className="bg-card text-card-foreground rounded-[2rem] shadow-2xl max-w-md w-full p-8 text-center border border-border/50"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ type: "spring", duration: 0.5 }}
               >
-                <div className="h-24 w-24 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center animate-pulse relative">
-                  <div className="absolute inset-0 rounded-full bg-blue-500 opacity-30 animate-ping"></div>
-                  {timerState.completedSessionMode === 'work' ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                    </svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  )}
+                <div className="flex justify-center mb-6">
+                  <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center">
+                    {timerState.completedSessionMode === 'work' ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    )}
+                  </div>
                 </div>
-              </motion.div>
-              <motion.h2 
-                className="text-3xl font-bold mb-4 text-blue-600 dark:text-blue-400"
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-              >
-                {timerState.completedSessionMode === 'work' ? 'Your work session is over!' : 
-                 timerState.completedSessionMode === 'shortBreak' ? 'Short break is over!' :
-                 'Long break is over!'}
-              </motion.h2>
-              <motion.p 
-                className="mb-8 text-gray-700 dark:text-gray-300 text-xl"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              >
-                {timerState.completedSessionMode === 'work' 
-                  ? 'Time for a break.' 
-                  : timerState.completedSessionMode === 'shortBreak'
-                  ? 'Ready to focus again?'
-                  : 'Ready to get back to work?'}
-              </motion.p>
-              <motion.div 
-                className="flex justify-center"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+                <h2 className="text-2xl font-normal mb-2">
+                  {timerState.completedSessionMode === 'work' ? 'Session Complete' : 'Break Over'}
+                </h2>
+                <p className="mb-8 text-muted-foreground">
+                  {timerState.completedSessionMode === 'work'
+                    ? 'Great job! Take a moment to recharge.'
+                    : 'Ready to get back in the zone?'}
+                </p>
                 <button
                   onClick={confirmNotification}
-                  className="px-10 py-5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 notification-button font-semibold text-xl transition-all shadow-xl"
+                  className="w-full py-4 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-all font-medium text-lg shadow-lg shadow-primary/25"
                 >
-                  {timerState.completedSessionMode === 'work' ? 'Start Break' : 'Start Working'}
+                  {timerState.completedSessionMode === 'work' ? 'Start Break' : 'Start Focusing'}
                 </button>
               </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
 
-      <motion.div 
-        className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-start min-h-0"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      >
-        <motion.div 
-          className="xl:col-span-3 space-y-6 min-h-0 xl:ml-48"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <motion.div 
-            className="bg-white dark:bg-black rounded-xl shadow-lg p-6"
-            whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-            transition={{ duration: 0.3 }}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: Timer */}
+          <motion.div
+            className="lg:col-span-7 space-y-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            <TimerDisplay 
-              timeRemaining={timerState.timeRemaining}
-              currentMode={currentMode}
-              isRunning={timerState.isRunning}
-              isPaused={timerState.isPaused}
-              settings={settings}
-            />
-            
-            <TimerControls
-              isRunning={timerState.isRunning}
-              isPaused={timerState.isPaused}
-              currentMode={currentMode}
-              onStart={() => startTimer()}
-              onPause={pauseTimer}
-              onResume={resumeTimer}
-              onStop={stopTimer}
-              onReset={resetTimer}
-              onSwitchMode={switchMode}
-              onOpenSettings={() => setIsSettingsOpen(true)}
-            />
-          </motion.div>
+            <div className="bg-card text-card-foreground rounded-[2rem] shadow-sm border border-border/50 p-8 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-20"></div>
+              <TimerDisplay
+                timeRemaining={timerState.timeRemaining}
+                currentMode={currentMode}
+                isRunning={timerState.isRunning}
+                isPaused={timerState.isPaused}
+                settings={settings}
+                onSwitchMode={switchMode}
+              />
 
-          <motion.div 
-            className="bg-white dark:bg-black rounded-xl shadow-lg p-6"
-            whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-            transition={{ duration: 0.3 }}
-          >
-            <h2 className="text-xl font-semibold mb-4">Current Session</h2>
-            {timerState.currentTask ? (
-              <motion.div 
-                className="space-y-2"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <p className="font-medium">{timerState.currentTask.title}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  {timerState.currentTask.description || 'No description'}
+              <div className="mt-8">
+                <TimerControls
+                  isRunning={timerState.isRunning}
+                  isPaused={timerState.isPaused}
+                  currentMode={currentMode}
+                  onStart={() => startTimer()}
+                  onPause={pauseTimer}
+                  onResume={resumeTimer}
+                  onStop={stopTimer}
+                  onReset={resetTimer}
+                  onSwitchMode={switchMode}
+                  onOpenSettings={() => setIsSettingsOpen(true)}
+                />
+              </div>
+            </div>
+
+            {/* Session Info Card */}
+            <div className="bg-secondary/30 rounded-[1.5rem] p-6 flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Current Session</p>
+                <p className="text-lg font-medium mt-1">
+                  {timerState.currentTask ? timerState.currentTask.title : 'No task selected'}
                 </p>
-                <div className="flex items-center justify-between text-sm">
-                  <span>Priority</span>
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    timerState.currentTask.priority === 'high' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                    timerState.currentTask.priority === 'medium' ? 'bg-gray-100 text-gray-800 dark:bg-black dark:text-gray-200' :
-                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                  }`}>
-                    {timerState.currentTask.priority.charAt(0).toUpperCase() + timerState.currentTask.priority.slice(1)}
-                  </span>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.p 
-                className="text-gray-500 dark:text-gray-400"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                No task selected
-              </motion.p>
-            )}
-
-            <div className="mt-6">
-              <h3 className="text-lg font-medium mb-2">Session Progress</h3>
-              <motion.div 
-                className="space-y-2"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-              >
-                <div className="flex justify-between text-sm">
-                  <span>Work Sessions</span>
-                  <span>{timerState.sessionCount}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Mode</span>
-                  <span className="capitalize">{currentMode}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Next Break</span>
-                  <span>
-                    {currentMode === 'work' ? 'Short Break' : 'Work Session'}
-                  </span>
-                </div>
-              </motion.div>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Completed</p>
+                <p className="text-2xl font-semibold text-primary mt-1">{timerState.sessionCount}</p>
+              </div>
             </div>
           </motion.div>
-        </motion.div>
 
-        <motion.div 
-          className="bg-white dark:bg-black rounded-xl shadow-lg p-6 min-h-0"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-        >
-          <Tabs defaultValue="tasks" className="h-full flex flex-col">
-            <TabsList className="grid w-full grid-cols-2 mb-4 flex-shrink-0">
-              <TabsTrigger value="tasks">Tasks</TabsTrigger>
-              <TabsTrigger value="stats">Statistics</TabsTrigger>
-            </TabsList>
-            <TabsContent value="tasks" className="flex-1 overflow-y-auto">
-              <TaskList
-                tasks={tasks}
-                onAddTask={addTask}
-                onUpdateTask={updateTaskHandler}
-                onDeleteTask={deleteTaskHandler}
-                onToggleComplete={toggleTaskCompletion}
-                onSelectTask={selectTaskForTimer}
-                currentTask={timerState.currentTask}
-              />
-            </TabsContent>
-            <TabsContent value="stats" className="flex-1 overflow-y-auto">
-              <div className="mb-4 flex gap-2">
-                <button
-                  className={`px-4 py-2 rounded-lg font-semibold transition-colors ${statsMode === 'daily' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-black dark:text-gray-200'}`}
-                  onClick={() => setStatsMode('daily')}
-                >
-                  Day
-                </button>
-                <button
-                  className={`px-4 py-2 rounded-lg font-semibold transition-colors ${statsMode === 'weekly' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-black dark:text-gray-200'}`}
-                  onClick={() => setStatsMode('weekly')}
-                >
-                  Weekly
-                </button>
-              </div>
-              <StatsDisplay mode={statsMode} stats={statsMode === 'daily' ? dailyStats : weeklyStats} />
-            </TabsContent>
-          </Tabs>
-        </motion.div>
-      </motion.div>
+          {/* Right Column: Tasks & Stats */}
+          <motion.div
+            className="lg:col-span-5 space-y-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <DailyRoutine />
 
-      <SettingsDialog 
-        isOpen={isSettingsOpen} 
-        onClose={() => setIsSettingsOpen(false)}
-        settings={settings}
-        onUpdateSettings={updateSettings}
-      />
-    </main>
+            <div className="bg-card text-card-foreground rounded-[2rem] shadow-sm border border-border/50 p-6 h-[600px] flex flex-col">
+              <Tabs defaultValue="tasks" className="h-full flex flex-col">
+                <TabsList className="w-full grid grid-cols-2 mb-6 bg-secondary/50 p-1 rounded-full">
+                  <TabsTrigger value="tasks" className="rounded-full data-[state=active]:bg-background data-[state=active]:shadow-sm">Tasks</TabsTrigger>
+                  <TabsTrigger value="stats" className="rounded-full data-[state=active]:bg-background data-[state=active]:shadow-sm">Stats</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="tasks" className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                  <TaskList
+                    tasks={tasks}
+                    onAddTask={addTask}
+                    onUpdateTask={updateTaskHandler}
+                    onDeleteTask={deleteTaskHandler}
+                    onToggleComplete={toggleTaskCompletion}
+                    onSelectTask={selectTaskForTimer}
+                    currentTask={timerState.currentTask}
+                  />
+                </TabsContent>
+
+                <TabsContent value="stats" className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="flex gap-2 mb-6 bg-secondary/30 p-1 rounded-xl inline-flex">
+                    <button
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statsMode === 'daily' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                      onClick={() => setStatsMode('daily')}
+                    >
+                      Daily
+                    </button>
+                    <button
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statsMode === 'weekly' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                      onClick={() => setStatsMode('weekly')}
+                    >
+                      Weekly
+                    </button>
+                  </div>
+                  <StatsDisplay mode={statsMode} stats={statsMode === 'daily' ? dailyStats : weeklyStats} />
+                </TabsContent>
+              </Tabs>
+            </div>
+          </motion.div>
+        </div>
+
+        <SettingsDialog
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          settings={settings}
+          onUpdateSettings={updateSettings}
+        />
+      </main>
+    </div>
   )
 }

@@ -6,6 +6,7 @@ import { Task } from '@/types'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Plus, Edit, Trash2, Play, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import PremiumButton from './PremiumButton'
 
 interface TaskListProps {
   tasks: Task[]
@@ -108,22 +109,21 @@ export default function TaskList({
 
   return (
     <div className="space-y-4">
-      <motion.div 
+      <motion.div
         className="flex items-center justify-between"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         <h3 className="text-lg font-semibold">Tasks</h3>
-        <motion.button
+        <PremiumButton
           onClick={() => setIsAdding(true)}
-          className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          whileHover={{ scale: 1.05, y: -2 }}
-          whileTap={{ scale: 0.95 }}
+          size="sm"
+          className="gap-2"
         >
           <Plus className="h-4 w-4" />
           Add Task
-        </motion.button>
+        </PremiumButton>
       </motion.div>
 
       <AnimatePresence>
@@ -146,7 +146,7 @@ export default function TaskList({
                 <X className="h-5 w-5" />
               </motion.button>
             </div>
-            
+
             <input
               type="text"
               placeholder="Task title"
@@ -154,7 +154,7 @@ export default function TaskList({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewTask({ ...newTask, title: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-black dark:border-gray-600 dark:text-white"
             />
-            
+
             <textarea
               placeholder="Task description (optional)"
               value={newTask.description}
@@ -162,7 +162,7 @@ export default function TaskList({
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-black dark:border-gray-600 dark:text-white"
               rows={3}
             />
-            
+
             <div className="grid grid-cols-2 gap-4">
               <Select
                 value={newTask.priority}
@@ -178,30 +178,27 @@ export default function TaskList({
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="flex gap-2">
-              <motion.button
+              <PremiumButton
                 onClick={handleAddTask}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                size="sm"
               >
                 Add Task
-              </motion.button>
-              <motion.button
+              </PremiumButton>
+              <PremiumButton
                 onClick={() => setIsAdding(false)}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                variant="secondary"
+                size="sm"
               >
                 Cancel
-              </motion.button>
+              </PremiumButton>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <motion.div 
+      <motion.div
         className="space-y-3"
         variants={containerVariants}
         initial="hidden"
@@ -216,11 +213,10 @@ export default function TaskList({
               animate="visible"
               exit="exit"
               layout
-              className={`p-4 rounded-lg border transition-all duration-200 ${
-                currentTask?.id === task.id
+              className={`p-4 rounded-lg border transition-all duration-200 ${currentTask?.id === task.id
                   ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                   : 'border-gray-200 dark:border-gray-900 bg-white dark:bg-black'
-              } ${task.completed ? 'opacity-60' : ''}`}
+                } ${task.completed ? 'opacity-60' : ''}`}
             >
               {editingId === task.id ? (
                 <motion.div
@@ -240,7 +236,7 @@ export default function TaskList({
                       <X className="h-5 w-5" />
                     </motion.button>
                   </div>
-                  
+
                   <input
                     type="text"
                     placeholder="Task title"
@@ -248,7 +244,7 @@ export default function TaskList({
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewTask({ ...newTask, title: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-black dark:border-gray-600 dark:text-white"
                   />
-                  
+
                   <textarea
                     placeholder="Task description (optional)"
                     value={newTask.description}
@@ -256,7 +252,7 @@ export default function TaskList({
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-black dark:border-gray-600 dark:text-white"
                     rows={3}
                   />
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <Select
                       value={newTask.priority}
@@ -272,24 +268,21 @@ export default function TaskList({
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="flex gap-2">
-                    <motion.button
+                    <PremiumButton
                       onClick={() => handleUpdateTask(task.id)}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      size="sm"
                     >
                       Update Task
-                    </motion.button>
-                    <motion.button
+                    </PremiumButton>
+                    <PremiumButton
                       onClick={() => setEditingId(null)}
-                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      variant="secondary"
+                      size="sm"
                     >
                       Cancel
-                    </motion.button>
+                    </PremiumButton>
                   </div>
                 </motion.div>
               ) : (
@@ -306,9 +299,9 @@ export default function TaskList({
                         className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       />
                     </motion.div>
-                    
+
                     <div className="flex-1 min-w-0">
-                      <motion.h4 
+                      <motion.h4
                         className={`font-medium ${task.completed ? 'line-through text-gray-500' : ''}`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -317,7 +310,7 @@ export default function TaskList({
                         {task.title}
                       </motion.h4>
                       {task.description && (
-                        <motion.p 
+                        <motion.p
                           className="text-sm text-gray-600 dark:text-gray-400 mt-1"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
@@ -326,8 +319,8 @@ export default function TaskList({
                           {task.description}
                         </motion.p>
                       )}
-                      
-                      <motion.div 
+
+                      <motion.div
                         className="flex items-center gap-2"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -339,39 +332,39 @@ export default function TaskList({
                       </motion.div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 ml-4">
                     {!task.completed && (
-                      <motion.button
+                      <PremiumButton
                         onClick={() => onSelectTask(task)}
-                        className="p-2 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-                        whileHover={{ scale: 1.1, rotate: 15 }}
-                        whileTap={{ scale: 0.9 }}
+                        variant="icon"
+                        size="icon"
+                        className="h-8 w-8 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900/20"
                         title="Start working on this task"
                       >
                         <Play className="h-4 w-4" />
-                      </motion.button>
+                      </PremiumButton>
                     )}
-                    
-                    <motion.button
+
+                    <PremiumButton
                       onClick={() => startEditing(task)}
-                      className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                      whileHover={{ scale: 1.1, rotate: 15 }}
-                      whileTap={{ scale: 0.9 }}
+                      variant="icon"
+                      size="icon"
+                      className="h-8 w-8 text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
                       title="Edit task"
                     >
                       <Edit className="h-4 w-4" />
-                    </motion.button>
-                    
-                    <motion.button
+                    </PremiumButton>
+
+                    <PremiumButton
                       onClick={() => onDeleteTask(task.id)}
-                      className="p-2 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                      whileHover={{ scale: 1.1, rotate: 15 }}
-                      whileTap={{ scale: 0.9 }}
+                      variant="icon"
+                      size="icon"
+                      className="h-8 w-8 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/20"
                       title="Delete task"
                     >
                       <Trash2 className="h-4 w-4" />
-                    </motion.button>
+                    </PremiumButton>
                   </div>
                 </div>
               )}
@@ -381,7 +374,7 @@ export default function TaskList({
       </motion.div>
 
       {tasks.length === 0 && (
-        <motion.div 
+        <motion.div
           className="text-center py-8 text-gray-500 dark:text-gray-400"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
