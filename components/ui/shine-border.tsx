@@ -53,7 +53,7 @@ export function ShineBorder({
                 } as React.CSSProperties
             }
             className={cn(
-                "motion-safe:animate-shine pointer-events-none absolute inset-0 size-full rounded-[inherit] will-change-[background-position]",
+                "motion-safe:group-hover:animate-shine pointer-events-none absolute inset-0 size-full rounded-[inherit] will-change-[background-position] opacity-0 group-hover:opacity-100 transition-opacity duration-300",
                 className
             )}
             {...props}

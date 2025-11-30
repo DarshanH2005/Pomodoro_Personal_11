@@ -215,7 +215,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="bg-card text-card-foreground rounded-[2rem] shadow-sm border border-border/50 p-8 relative overflow-hidden">
+            <div className="group bg-card text-card-foreground rounded-[2rem] shadow-sm border border-border/50 p-8 relative overflow-hidden">
               <ShineBorder shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]} />
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-20"></div>
               <TimerDisplay
